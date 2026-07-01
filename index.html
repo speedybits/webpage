@@ -195,28 +195,50 @@
     //  `inferred: true` marks descriptions I guessed — please review/rewrite these.
     // ────────────────────────────────────────────────────────────────
     const projects = [
-      { name: "couchworthy",    desc: "TypeScript web app.", lang: "TypeScript", stars: 0, category: "Web Apps", inferred: true },
-      { name: "rosiecloud",     desc: "Cloud companion to Rosie — the voice AI assistant, hosted.", lang: "TypeScript", stars: 0, category: "AI & Voice", inferred: true },
-      { name: "clutterbucks",   desc: "TypeScript web app.", lang: "TypeScript", stars: 1, category: "Web Apps", inferred: true },
-      { name: "escapecall",     desc: "JavaScript web app.", lang: "JavaScript", stars: 1, category: "Web Apps", inferred: true },
-      { name: "casualquest",    desc: "Casual D&D web app — an AI Dungeon Master narrates scenes painted on the fly. Players join from their phones.", lang: "TypeScript", stars: 0, category: "Games" },
-      { name: "cc_qa",          desc: "E2E testing skill (claude-skill-e2e-playwright) — a shared Playwright toolkit for Next.js + Prisma + Clerk + Railway SaaS apps.", lang: "TypeScript", stars: 0, category: "Dev Tools" },
-      { name: "borderline_web", desc: "Web version of Mike and Sean's Borderline party game.", lang: "JavaScript", stars: 1, category: "Games" },
-      { name: "nimbus",         desc: "Python project.", lang: "Python", stars: 1, category: "AI & Voice", url: "https://github.com/speedybits/nimbus", inferred: true },
-      { name: "rosie",          desc: "A modular, high-performance voice AI assistant with a local-first architecture.", lang: "Python", stars: 1, category: "AI & Voice" },
-      { name: "b4m_yahboom",    desc: "ROS 2 packages for the Yahboom robot.", lang: "Python", stars: 3, category: "Robotics", url: "https://github.com/speedybits/b4m_yahboom" },
-      { name: "Math_Arcade",    desc: "Browser-based arcade for practicing math.", lang: "HTML", stars: 0, category: "Games", url: "https://github.com/speedybits/Math_Arcade", inferred: true },
-      { name: "ha-b4m-addon",   desc: "bike4mind OpenAI Shim — a Home Assistant add-on for bike4mind AI integration.", lang: "Python", stars: 0, category: "AI & Voice", url: "https://github.com/speedybits/ha-b4m-addon" },
-      { name: "b4m_turtlebot3", desc: "ROS 2 packages for the TurtleBot3 platform.", lang: "Python", stars: 0, category: "Robotics", url: "https://github.com/speedybits/b4m_turtlebot3", inferred: true },
-      { name: "Webots_in_docker_demo", desc: "Demo running the Webots robotics simulator inside Docker.", lang: "Python", stars: 0, category: "Robotics", inferred: true },
-      { name: "Bike4Mind_ROS",  desc: "ROS integration for Bike4Mind.", lang: "Python", stars: 0, category: "Robotics", inferred: true },
-      { name: "PokerTetris",    desc: "A browser game mashing up poker and Tetris.", lang: "JavaScript", stars: 0, category: "Games", url: "https://github.com/speedybits/PokerTetris", inferred: true },
-      { name: "freetimes",      desc: "TypeScript web app.", lang: "TypeScript", stars: 0, category: "Web Apps", inferred: true },
-      { name: "InService",      desc: "JavaScript web app.", lang: "JavaScript", stars: 0, category: "Web Apps", url: "https://github.com/speedybits/InService", inferred: true },
-      { name: "mo_landroid",    desc: "C++ firmware/mods for the Landroid robotic mower.", lang: "C++", stars: 0, category: "Robotics", inferred: true },
-      { name: "PoolControl",    desc: "Pool controller for the AQL2-SS-RF remote.", lang: "C++", stars: 0, category: "Embedded", url: "https://github.com/speedybits/PoolControl" },
-      { name: "jetson_mower",   desc: "Jetson-powered autonomous robotic mower.", lang: "Python", stars: 0, category: "Robotics", url: "https://github.com/speedybits/jetson_mower", inferred: true },
-      { name: "ArdumowerGPS",   desc: "GPS features for the Ardumower (Azurit) platform.", lang: "C++", stars: 0, category: "Robotics" }
+      { name: "couchworthy", lang: "TypeScript", stars: 0, category: "Web Apps",
+        desc: "Couchworthy is a US-only SaaS web app that gives personalized TV and movie recommendations for groups of one to four people watching together. Its differentiator is the quality of the explanation: a paragraph telling the group specifically why they'll like a given pick. Built on Next.js 15, Postgres, and Anthropic Claude, with an owned catalog sourced from Wikidata and Wikipedia plus on-device embeddings." },
+      { name: "rosiecloud", lang: "TypeScript", stars: 0, category: "AI & Voice",
+        desc: "RosieCloud is a privacy-first AI chat app that anonymizes your text locally, in the browser, before it ever reaches an AI provider. On-device NER detects names, locations, and medical or financial details and swaps them for deterministic aliases, so the model only ever sees 'Person_A' or 'Doctor_1'; replies are then rehydrated with your real data, which stays encrypted on your device. It runs Claude, GPT-4o, and Gemini behind the same anonymizing layer." },
+      { name: "clutterbucks", lang: "TypeScript", stars: 1, category: "Web Apps",
+        desc: "ClutterBucks is a mobile-first PWA for decluttering: photograph an item and AI vision identifies it, estimates its resale value, recommends the best selling platform based on value thresholds, and generates optimized listing content. Built with Next.js, Prisma/Postgres, Clerk, and the Anthropic Claude vision API, deployed on Railway." },
+      { name: "escapecall", lang: "JavaScript", stars: 1, category: "Web Apps",
+        desc: "EscapeCall lets you trigger a real phone call to yourself with a single tap, from an Apple Watch complication or an iPhone Back Tap gesture, so your phone rings seconds later with an authentic incoming call and a realistic AI voice when you answer. Unlike fake-call apps that just play audio, it places an actual call through telecom infrastructure, so it rings for real and shows up in your call log: a graceful exit from bad dates, long meetings, or awkward situations." },
+      { name: "casualquest", lang: "TypeScript", stars: 0, category: "Games",
+        desc: "CasualQuest is a web-based 'casual Dungeons & Dragons' platform that removes the friction from tabletop RPGs using an AI Dungeon Master, voice narration, and per-scene image generation. The shared story plays out on a main screen (TV, PC, or iPad) while players join and act from their phones; D&D 5e rules run silently under the hood, so players see only narrated outcomes. An optional battle-map view renders a tactical grid compatible with physical miniatures." },
+      { name: "cc_qa", lang: "TypeScript", stars: 0, category: "Dev Tools",
+        desc: "claude-skill-e2e-playwright is a shared end-to-end testing toolkit for Next.js + Prisma + Clerk + Railway SaaS apps. Dropped into a project as a git submodule, it provides a working Playwright setup, Clerk sign-in, Railway database wiring, and a small CLI (e2e init, e2e run). It is built around one contract: new features ship behind a beta-user gate with a Playwright spec that proves they work, graduating to real users only once the test is green." },
+      { name: "borderline_web", lang: "JavaScript", stars: 1, category: "Games",
+        desc: "A web version of Mike and Sean's Borderline, a two-player strategy game where each side places patterned pieces to build a connected pip path from their home row across an 8x6 board to the opponent's side. This implementation adds a multiplayer server, combat cards, and a human-vs-AI mode." },
+      { name: "nimbus", lang: "Python", stars: 1, category: "Robotics", url: "https://github.com/speedybits/nimbus",
+        desc: "Nimbus is a lightweight robot control platform that replaces heavy ROS 2 navigation stacks with a minimal, pure-Python implementation. It talks directly to an ESP32 over XRCE-DDS (no ROS 2, no Docker), offering reactive obstacle avoidance, a hardware safety layer that cannot be bypassed, a rich terminal dashboard, and REST + WebSocket APIs for Home Assistant, custom dashboards, or AI integration. Its test suite runs entirely without hardware." },
+      { name: "rosie", lang: "Python", stars: 1, category: "AI & Voice",
+        desc: "Rosie is a local-first voice AI assistant: no cloud APIs, no subscriptions, and no data leaving your machine. It runs entirely on local models (Ollama for the LLM, Piper for speech) and supports both voice and text modes, with an optional RAG knowledge base and interruption handling." },
+      { name: "b4m_yahboom", lang: "Python", stars: 3, category: "Robotics", url: "https://github.com/speedybits/b4m_yahboom",
+        desc: "ROS 2 packages for the Yahboom robot, part of the Bike4Mind ('b4m') robotics line. It provides the bridge, sensor, and control nodes needed to drive the Yahboom platform under ROS 2." },
+      { name: "Math_Arcade", lang: "HTML", stars: 0, category: "Games", url: "https://github.com/speedybits/Math_Arcade",
+        desc: "Math Arcade is a set of browser-based educational games for practicing multiplication tables, turning times-table drills into arcade-style play. It runs entirely in the browser with no install." },
+      { name: "ha-b4m-addon", lang: "Python", stars: 0, category: "AI & Voice", url: "https://github.com/speedybits/ha-b4m-addon",
+        desc: "A Home Assistant add-on that acts as an OpenAI-compatible API shim, translating between Home Assistant's Extended OpenAI Conversation integration and bike4mind's quest-based polling API. It supports streaming responses, tool-calling for device control, session management, automatic date/time context, and proactive 'EXTROVERT' conversations triggered by automations, letting bike4mind's AI drive a smart home." },
+      { name: "b4m_turtlebot3", lang: "Python", stars: 0, category: "Robotics", url: "https://github.com/speedybits/b4m_turtlebot3",
+        desc: "ROS 2 packages that bring the Bike4Mind assistant to the TurtleBot3 platform, including a bridge node and camera integration, launched via a Vagrant VM and simulation script. Part of the wider Bike4Mind robotics experiments." },
+      { name: "Webots_in_docker_demo", lang: "Python", stars: 0, category: "Robotics",
+        desc: "A reference project that runs the Webots robot simulator with ROS 2 Humble inside a Docker container, featuring a TurtleBot3 model with a full sensor suite, SLAM mapping, RViz2 visualization, teleoperation, and VNC/noVNC access to the GUI. It's a turnkey way to do containerized robotics simulation without a local Webots install." },
+      { name: "Bike4Mind_ROS", lang: "Python", stars: 0, category: "Robotics",
+        desc: "An intelligent bicycle-assistant project built on ROS 2 Humble, Webots simulation, and voice interaction. It packages the specification, service model, and Dockerized run environment for a voice-driven robotic bike assistant, an earlier foundation for the later Bike4Mind robotics work." },
+      { name: "PokerTetris", lang: "JavaScript", stars: 0, category: "Games", url: "https://github.com/speedybits/PokerTetris",
+        desc: "Cardtris is a browser game that mashes up Tetris's falling-block mechanics with poker-hand scoring using a standard 52-card deck. Players place falling cards on a 5x10 board to form winning poker hands, with a level system that ramps up each time you cycle through the deck. Built mobile-first with touch controls." },
+      { name: "freetimes", lang: "TypeScript", stars: 0, category: "Web Apps",
+        desc: "Free Time Calendar Display is a web app that helps people share their availability from Google Calendar without exposing event details. Users connect multiple calendars (free/busy only), combine them into groups, and generate a shareable page where others browse open days and click into specific free time blocks, updating in real time as calendars change." },
+      { name: "InService", lang: "JavaScript", stars: 0, category: "Web Apps", url: "https://github.com/speedybits/InService",
+        desc: "InService is a lightweight service-status tracker with a Leaflet map front end and a Firebase backend. It shows location-based service status, lets you toggle a location's status, and supports subscribing to updates: a minimal real-time status board." },
+      { name: "mo_landroid", lang: "C++", stars: 0, category: "Robotics",
+        desc: "Firmware mods for a Worx Landroid robotic mower, split across two Arduino sketches: a 'PWC' controller that can cut or toggle the perimeter wire, and a robot-side unit adding Wi-Fi control, LiDAR, and Bluetooth keep-out zones. Together they let the mower detect being stuck and enforce virtual boundaries beyond the stock perimeter loop." },
+      { name: "PoolControl", lang: "C++", stars: 0, category: "Embedded", url: "https://github.com/speedybits/PoolControl",
+        desc: "An Arduino-based pool controller that physically drives an AQL2-SS-RF remote with servos that press its buttons, automating pool filter and cleaning-robot on/off cycles on a timer. The repo also includes FreeCAD models and a 3D-printable mount for the remote and servos." },
+      { name: "jetson_mower", lang: "Python", stars: 0, category: "Robotics", url: "https://github.com/speedybits/jetson_mower",
+        desc: "An NVIDIA Jetson-powered autonomous mower experiment that uses the Jetson's GPU for vision-based boundary detection and navigation. It includes a boundary-orchestration script and the main mower control loop, built on NVIDIA's sample code." },
+      { name: "ArdumowerGPS", lang: "C++", stars: 0, category: "Robotics",
+        desc: "GPS enhancements for the open-source Ardumower robotic lawn mower running the Azurit firmware, adding satellite-based positioning to complement the mower's perimeter-wire navigation. Includes supporting Arduino libraries and a ROS integration folder." }
     ];
 
     const langColors = {
@@ -242,6 +264,10 @@
       filtersEl.appendChild(chip);
     });
 
+    function esc(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     function icon(name) {
       const svgs = {
         star: '<svg class="stars-i" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .59l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.27l-6.18 3.25L7 13.72l-5-4.87 6.91-1z"/></svg>',
@@ -262,7 +288,7 @@
           <h3>${p.name} ${arrow}</h3>
           ${badge}
         </div>
-        <p${p.inferred ? ' class="placeholder"' : ''}>${p.desc}</p>
+        <p>${esc(p.desc)}</p>
         <div class="card-foot">
           <span class="lang"><span class="dot" style="background:${color}"></span>${p.lang}</span>
           ${stars}
