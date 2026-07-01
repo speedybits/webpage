@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>speedybits · Projects</title>
+  <meta name="description" content="Projects by speedybits — robotics, AI, games, and web apps.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --bg-elev: #131823;
+      --bg-card: #161c2a;
+      --bg-card-hover: #1c2436;
+      --border: #263048;
+      --border-hover: #3a4a6a;
+      --text: #e6ebf5;
+      --text-dim: #9aa7bf;
+      --text-faint: #64708a;
+      --accent: #6ea8fe;
+      --accent-2: #a78bfa;
+      --accent-glow: rgba(110, 168, 254, 0.15);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      background-image:
+        radial-gradient(900px 500px at 15% -10%, rgba(110,168,254,0.10), transparent 60%),
+        radial-gradient(800px 500px at 100% 0%, rgba(167,139,250,0.10), transparent 55%);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header { padding: 88px 0 40px; }
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; letter-spacing: 0.04em;
+      color: var(--accent); margin-bottom: 18px;
+    }
+    h1 {
+      font-size: clamp(38px, 7vw, 62px);
+      font-weight: 800; letter-spacing: -0.02em; line-height: 1.05;
+      background: linear-gradient(135deg, #fff 20%, var(--accent) 70%, var(--accent-2));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .lede {
+      margin-top: 20px; max-width: 640px;
+      font-size: 18px; color: var(--text-dim);
+    }
+    .header-links { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      border: 1px solid var(--border); color: var(--text);
+      background: var(--bg-elev); transition: all .18s ease;
+    }
+    .btn:hover { border-color: var(--accent); background: var(--bg-card-hover); transform: translateY(-1px); }
+    .btn svg { width: 17px; height: 17px; }
+
+    /* Controls */
+    .controls {
+      position: sticky; top: 0; z-index: 20;
+      padding: 18px 0; margin-bottom: 8px;
+      background: rgba(11,14,20,0.82);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .controls-inner { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+    .search {
+      flex: 1; min-width: 220px; position: relative;
+    }
+    .search input {
+      width: 100%; padding: 11px 14px 11px 40px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text); font-size: 15px;
+      font-family: inherit; outline: none; transition: border-color .18s;
+    }
+    .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    .search svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--text-faint); }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      padding: 8px 14px; border-radius: 999px; cursor: pointer;
+      font-size: 13px; font-weight: 600;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-dim); transition: all .16s ease; user-select: none;
+    }
+    .chip:hover { color: var(--text); border-color: var(--border-hover); }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #08101f; }
+
+    .count { color: var(--text-faint); font-size: 13px; padding: 4px 0 20px; font-family: 'JetBrains Mono', monospace; }
+
+    /* Grid */
+    .grid {
+      display: grid; gap: 18px; padding-bottom: 80px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+    .card {
+      position: relative; display: flex; flex-direction: column;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px;
+      text-decoration: none; color: inherit;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      overflow: hidden;
+    }
+    .card::before {
+      content: ""; position: absolute; inset: 0; border-radius: var(--radius);
+      padding: 1px; background: linear-gradient(135deg, transparent, transparent);
+      opacity: 0; transition: opacity .2s;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    a.card:hover { transform: translateY(-4px); border-color: var(--border-hover); background: var(--bg-card-hover); }
+    a.card:hover::before { opacity: 1; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+    .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+    .card h3 .arrow { opacity: 0; transition: opacity .18s, transform .18s; color: var(--accent); }
+    a.card:hover h3 .arrow { opacity: 1; transform: translate(2px,-2px); }
+    .badge {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+      padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+      background: rgba(167,139,250,0.14); color: var(--accent-2);
+      border: 1px solid rgba(167,139,250,0.3);
+    }
+    .card p { color: var(--text-dim); font-size: 14.5px; flex: 1; }
+    .card p.placeholder { color: var(--text-faint); font-style: italic; }
+    .card-foot { display: flex; align-items: center; gap: 14px; margin-top: 18px; font-size: 13px; color: var(--text-faint); flex-wrap: wrap; }
+    .lang { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text-dim); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .stars { display: inline-flex; align-items: center; gap: 4px; }
+    .cat-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-left: auto; color: var(--text-faint); }
+
+    footer { border-top: 1px solid var(--border); padding: 34px 0 60px; color: var(--text-faint); font-size: 14px; }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .empty { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-faint); }
+
+    @media (max-width: 560px) {
+      header { padding: 60px 0 30px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="eyebrow">$ ls ~/projects</div>
+      <h1>speedybits</h1>
+      <p class="lede">A collection of things I've built — robotics &amp; embedded systems, AI &amp; voice assistants, games, and web apps. <span id="pubcount"></span></p>
+      <div class="header-links">
+        <a class="btn" href="https://github.com/speedybits" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          GitHub Profile
+        </a>
+      </div>
+    </header>
+  </div>
+
+  <div class="controls">
+    <div class="wrap controls-inner">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="search" type="text" placeholder="Search projects…" autocomplete="off">
+      </div>
+      <div class="filters" id="filters"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="count" id="count"></div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="wrap">
+    <footer>
+      Built by speedybits · Hosted on GitHub Pages · <a href="https://github.com/speedybits" target="_blank" rel="noopener">github.com/speedybits</a>
+      <br><span style="color:var(--text-faint)">Edit the <code>projects</code> array in <code>index.html</code> to update this page.</span>
+    </footer>
+  </div>
+
+  <script>
+    // ────────────────────────────────────────────────────────────────
+    //  PROJECT DATA — edit here to update the page.
+    //  Fields: name, desc, lang, stars, category, url (omit/empty = private → shows "Private" badge)
+    //  `inferred: true` marks descriptions I guessed — please review/rewrite these.
+    // ────────────────────────────────────────────────────────────────
+    const projects = [
+      { name: "couchworthy",    desc: "TypeScript web app.", lang: "TypeScript", stars: 0, category: "Web Apps", inferred: true },
+      { name: "rosiecloud",     desc: "Cloud companion to Rosie — the voice AI assistant, hosted.", lang: "TypeScript", stars: 0, category: "AI & Voice", inferred: true },
+      { name: "clutterbucks",   desc: "TypeScript web app.", lang: "TypeScript", stars: 1, category: "Web Apps", inferred: true },
+      { name: "escapecall",     desc: "JavaScript web app.", lang: "JavaScript", stars: 1, category: "Web Apps", inferred: true },
+      { name: "casualquest",    desc: "Casual D&D web app — an AI Dungeon Master narrates scenes painted on the fly. Players join from their phones.", lang: "TypeScript", stars: 0, category: "Games" },
+      { name: "cc_qa",          desc: "E2E testing skill (claude-skill-e2e-playwright) — a shared Playwright toolkit for Next.js + Prisma + Clerk + Railway SaaS apps.", lang: "TypeScript", stars: 0, category: "Dev Tools" },
+      { name: "borderline_web", desc: "Web version of Mike and Sean's Borderline party game.", lang: "JavaScript", stars: 1, category: "Games" },
+      { name: "nimbus",         desc: "Python project.", lang: "Python", stars: 1, category: "AI & Voice", url: "https://github.com/speedybits/nimbus", inferred: true },
+      { name: "rosie",          desc: "A modular, high-performance voice AI assistant with a local-first architecture.", lang: "Python", stars: 1, category: "AI & Voice" },
+      { name: "b4m_yahboom",    desc: "ROS 2 packages for the Yahboom robot.", lang: "Python", stars: 3, category: "Robotics", url: "https://github.com/speedybits/b4m_yahboom" },
+      { name: "Math_Arcade",    desc: "Browser-based arcade for practicing math.", lang: "HTML", stars: 0, category: "Games", url: "https://github.com/speedybits/Math_Arcade", inferred: true },
+      { name: "ha-b4m-addon",   desc: "bike4mind OpenAI Shim — a Home Assistant add-on for bike4mind AI integration.", lang: "Python", stars: 0, category: "AI & Voice", url: "https://github.com/speedybits/ha-b4m-addon" },
+      { name: "b4m_turtlebot3", desc: "ROS 2 packages for the TurtleBot3 platform.", lang: "Python", stars: 0, category: "Robotics", url: "https://github.com/speedybits/b4m_turtlebot3", inferred: true },
+      { name: "Webots_in_docker_demo", desc: "Demo running the Webots robotics simulator inside Docker.", lang: "Python", stars: 0, category: "Robotics", inferred: true },
+      { name: "Bike4Mind_ROS",  desc: "ROS integration for Bike4Mind.", lang: "Python", stars: 0, category: "Robotics", inferred: true },
+      { name: "PokerTetris",    desc: "A browser game mashing up poker and Tetris.", lang: "JavaScript", stars: 0, category: "Games", url: "https://github.com/speedybits/PokerTetris", inferred: true },
+      { name: "freetimes",      desc: "TypeScript web app.", lang: "TypeScript", stars: 0, category: "Web Apps", inferred: true },
+      { name: "InService",      desc: "JavaScript web app.", lang: "JavaScript", stars: 0, category: "Web Apps", url: "https://github.com/speedybits/InService", inferred: true },
+      { name: "mo_landroid",    desc: "C++ firmware/mods for the Landroid robotic mower.", lang: "C++", stars: 0, category: "Robotics", inferred: true },
+      { name: "PoolControl",    desc: "Pool controller for the AQL2-SS-RF remote.", lang: "C++", stars: 0, category: "Embedded", url: "https://github.com/speedybits/PoolControl" },
+      { name: "jetson_mower",   desc: "Jetson-powered autonomous robotic mower.", lang: "Python", stars: 0, category: "Robotics", url: "https://github.com/speedybits/jetson_mower", inferred: true },
+      { name: "ArdumowerGPS",   desc: "GPS features for the Ardumower (Azurit) platform.", lang: "C++", stars: 0, category: "Robotics" }
+    ];
+
+    const langColors = {
+      "TypeScript": "#3178c6", "JavaScript": "#f1e05a", "Python": "#3572A5",
+      "HTML": "#e34c26", "C++": "#f34b7d", "Other": "#8b949e"
+    };
+
+    const grid = document.getElementById('grid');
+    const filtersEl = document.getElementById('filters');
+    const searchEl = document.getElementById('search');
+    const countEl = document.getElementById('count');
+    const pubCount = projects.filter(p => p.url).length;
+    document.getElementById('pubcount').textContent = `${projects.length} projects, ${pubCount} open source.`;
+
+    const cats = ["All", ...Array.from(new Set(projects.map(p => p.category)))];
+    let activeCat = "All";
+
+    cats.forEach(c => {
+      const chip = document.createElement('div');
+      chip.className = 'chip' + (c === "All" ? ' active' : '');
+      chip.textContent = c;
+      chip.onclick = () => { activeCat = c; document.querySelectorAll('.chip').forEach(x => x.classList.toggle('active', x.textContent === c)); render(); };
+      filtersEl.appendChild(chip);
+    });
+
+    function icon(name) {
+      const svgs = {
+        star: '<svg class="stars-i" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .59l3.09 6.26 6.91 1-5 4.87 1.18 6.88L12 17.27l-6.18 3.25L7 13.72l-5-4.87 6.91-1z"/></svg>',
+      };
+      return svgs[name] || '';
+    }
+
+    function card(p) {
+      const isLink = !!p.url;
+      const tag = isLink ? 'a' : 'div';
+      const href = isLink ? ` href="${p.url}" target="_blank" rel="noopener"` : '';
+      const color = langColors[p.lang] || langColors.Other;
+      const badge = isLink ? '' : '<span class="badge">Private</span>';
+      const arrow = isLink ? '<span class="arrow">↗</span>' : '';
+      const stars = p.stars > 0 ? `<span class="stars">${icon('star')} ${p.stars}</span>` : '';
+      return `<${tag} class="card"${href}>
+        <div class="card-top">
+          <h3>${p.name} ${arrow}</h3>
+          ${badge}
+        </div>
+        <p${p.inferred ? ' class="placeholder"' : ''}>${p.desc}</p>
+        <div class="card-foot">
+          <span class="lang"><span class="dot" style="background:${color}"></span>${p.lang}</span>
+          ${stars}
+          <span class="cat-tag">${p.category}</span>
+        </div>
+      </${tag}>`;
+    }
+
+    function render() {
+      const q = searchEl.value.trim().toLowerCase();
+      const list = projects.filter(p => {
+        const matchCat = activeCat === "All" || p.category === activeCat;
+        const matchQ = !q || (p.name + ' ' + p.desc + ' ' + p.lang + ' ' + p.category).toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+      countEl.textContent = `// showing ${list.length} of ${projects.length}`;
+      grid.innerHTML = list.length ? list.map(card).join('') : '<div class="empty">No projects match your search.</div>';
+    }
+
+    searchEl.addEventListener('input', render);
+    render();
+  </script>
+</body>
+</html>
