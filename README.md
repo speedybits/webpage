@@ -17,8 +17,6 @@ Everything is in `index.html`. To add, remove, or reword a project, edit the
 
 - Omit `url` (or leave it empty) to mark a project **private** — the card shows a
   "Private" badge and is not clickable.
-- Entries marked `inferred: true` have descriptions I guessed from the repo name —
-  review and rewrite those, then remove the flag.
 - `category` values automatically become filter chips at the top of the page.
 
 No build step, no dependencies — it's plain HTML/CSS/JS served straight by GitHub Pages.
