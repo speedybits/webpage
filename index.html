@@ -25,6 +25,7 @@
       --radius: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body {
       background: var(--bg);
@@ -145,9 +146,70 @@
     footer a:hover { text-decoration: underline; }
     .empty { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-faint); }
 
+    /* View toggle */
+    .view-toggle { display: inline-flex; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 3px; gap: 2px; }
+    .vt-btn { font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text-dim); background: transparent; border: none; cursor: pointer; padding: 8px 14px; border-radius: 7px; transition: all .16s ease; white-space: nowrap; }
+    .vt-btn:hover { color: var(--text); }
+    .vt-btn.active { background: var(--accent); color: #08101f; }
+
+    /* Year nav (timeline mode) */
+    .yearnav {
+      position: sticky; top: 79px; z-index: 15;
+      display: flex; gap: 8px; flex-wrap: wrap; padding: 14px 0 12px;
+      background: rgba(11,14,20,0.86); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); margin-bottom: 6px;
+    }
+    .yr-pill {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 500;
+      padding: 5px 12px; border-radius: 999px; cursor: pointer;
+      background: var(--bg-card); border: 1px solid var(--border); color: var(--text-dim);
+      transition: all .16s ease; user-select: none;
+    }
+    .yr-pill:hover { color: var(--text); border-color: var(--border-hover); }
+    .yr-pill.active { background: var(--accent); border-color: var(--accent); color: #08101f; }
+
+    /* Timeline */
+    .timeline { position: relative; padding: 6px 0 80px; }
+    .timeline::before {
+      content: ""; position: absolute; left: 20px; top: 8px; bottom: 40px; width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--accent-2)); opacity: .4;
+    }
+    .tl-year { display: flex; align-items: center; gap: 14px; margin: 34px 0 20px; scroll-margin-top: 150px; }
+    .tl-year:first-child { margin-top: 8px; }
+    .tl-year .yr {
+      font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: var(--text);
+      background: var(--bg); padding: 0 12px 0 44px; position: relative; z-index: 2;
+    }
+    .tl-year .yr-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+    .tl-year .yr-line { flex: 1; height: 1px; background: var(--border); }
+
+    .tl-item {
+      position: relative; margin: 0 0 16px 52px;
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .tl-item.in { opacity: 1; transform: none; }
+    .tl-item::before {
+      content: ""; position: absolute; left: -39px; top: 30px;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--accent);
+      box-shadow: 0 0 0 4px var(--bg); z-index: 1; transition: all .2s ease;
+    }
+    .tl-item:has(> a:hover)::before { border-color: var(--accent-2); box-shadow: 0 0 0 4px var(--bg), 0 0 14px var(--accent); }
+    .tl-date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.02em; }
+    .tl-card { width: 100%; }
+    @media (prefers-reduced-motion: reduce) {
+      .tl-item { opacity: 1; transform: none; transition: none; }
+    }
+
     @media (max-width: 560px) {
       header { padding: 60px 0 30px; }
       .grid { grid-template-columns: 1fr; }
+      .controls-inner { gap: 10px; }
+      .view-toggle { width: 100%; }
+      .vt-btn { flex: 1; }
+      .yearnav { top: 72px; }
+      .tl-year .yr { font-size: 20px; padding-left: 40px; }
     }
   </style>
 </head>
@@ -173,12 +235,18 @@
         <input id="search" type="text" placeholder="Search projects…" autocomplete="off">
       </div>
       <div class="filters" id="filters"></div>
+      <div class="view-toggle" id="viewToggle" role="tablist" aria-label="View mode">
+        <button class="vt-btn active" data-view="grid" role="tab" aria-selected="true">▦&nbsp;Grid</button>
+        <button class="vt-btn" data-view="timeline" role="tab" aria-selected="false">◷&nbsp;Timeline</button>
+      </div>
     </div>
   </div>
 
   <div class="wrap">
+    <div class="yearnav" id="yearnav" hidden></div>
     <div class="count" id="count"></div>
     <div class="grid" id="grid"></div>
+    <div class="timeline" id="timeline" hidden></div>
   </div>
 
   <div class="wrap">
@@ -241,12 +309,32 @@
         desc: "GPS enhancements for the open-source Ardumower robotic lawn mower running the Azurit firmware, adding satellite-based positioning to complement the mower's perimeter-wire navigation. Includes supporting Arduino libraries and a ROS integration folder." }
     ];
 
+    // Project date spans: name -> [started (YYYY-MM), last active (YYYY-MM)]
+    // Sourced from each repo's GitHub created_at / pushed_at.
+    const dates = {
+      couchworthy: ["2026-06", "2026-07"], rosiecloud: ["2026-03", "2026-06"],
+      clutterbucks: ["2026-02", "2026-06"], escapecall: ["2026-01", "2026-06"],
+      casualquest: ["2026-05", "2026-05"], cc_qa: ["2026-04", "2026-04"],
+      borderline_web: ["2025-10", "2026-04"], nimbus: ["2026-01", "2026-04"],
+      rosie: ["2026-01", "2026-02"], b4m_yahboom: ["2025-05", "2026-01"],
+      Math_Arcade: ["2024-10", "2025-11"], "ha-b4m-addon": ["2025-10", "2025-11"],
+      b4m_turtlebot3: ["2025-02", "2025-03"], Webots_in_docker_demo: ["2025-01", "2025-01"],
+      Bike4Mind_ROS: ["2025-01", "2025-01"], PokerTetris: ["2024-12", "2025-01"],
+      freetimes: ["2024-12", "2024-12"], InService: ["2024-11", "2024-11"],
+      mo_landroid: ["2024-01", "2024-07"], PoolControl: ["2020-11", "2023-01"],
+      jetson_mower: ["2021-09", "2022-08"], ArdumowerGPS: ["2020-12", "2020-12"]
+    };
+    projects.forEach(p => { const d = dates[p.name]; if (d) { p.started = d[0]; p.active = d[1]; } });
+
     const langColors = {
       "TypeScript": "#3178c6", "JavaScript": "#f1e05a", "Python": "#3572A5",
       "HTML": "#e34c26", "C++": "#f34b7d", "Other": "#8b949e"
     };
 
     const grid = document.getElementById('grid');
+    const timelineEl = document.getElementById('timeline');
+    const yearnavEl = document.getElementById('yearnav');
+    const controlsEl = document.querySelector('.controls');
     const filtersEl = document.getElementById('filters');
     const searchEl = document.getElementById('search');
     const countEl = document.getElementById('count');
@@ -297,6 +385,99 @@
       </${tag}>`;
     }
 
+    // ── Timeline helpers ──────────────────────────────────────────
+    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function fmt(ym) { if (!ym) return ''; const [y,m] = ym.split('-'); return MON[+m-1] + ' ' + y; }
+    function spanText(p) {
+      const a = fmt(p.started), b = fmt(p.active);
+      if (!a) return '';
+      return (a === b || !b) ? a : a + ' – ' + b;
+    }
+
+    // Keep the sticky year-nav docked to the bottom of the (variable-height) controls bar.
+    function positionYearnav() { yearnavEl.style.top = (controlsEl ? controlsEl.offsetHeight : 0) + 'px'; }
+    function stickyOffset() {
+      return (controlsEl ? controlsEl.offsetHeight : 0) + (view === 'timeline' ? yearnavEl.offsetHeight : 0);
+    }
+    function jumpToYear(year) {
+      const el = document.getElementById('yr-' + year);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - stickyOffset() - 12;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+
+    function tlItem(p) {
+      const isLink = !!p.url;
+      const tag = isLink ? 'a' : 'div';
+      const href = isLink ? ` href="${p.url}" target="_blank" rel="noopener"` : '';
+      const color = langColors[p.lang] || langColors.Other;
+      const badge = isLink ? '' : '<span class="badge">Private</span>';
+      const arrow = isLink ? '<span class="arrow">↗</span>' : '';
+      const stars = p.stars > 0 ? `<span class="stars">${icon('star')} ${p.stars}</span>` : '';
+      return `<div class="tl-item">
+        <div class="tl-date">${spanText(p)}</div>
+        <${tag} class="card tl-card"${href}>
+          <div class="card-top"><h3>${p.name} ${arrow}</h3>${badge}</div>
+          <p>${esc(p.desc)}</p>
+          <div class="card-foot">
+            <span class="lang"><span class="dot" style="background:${color}"></span>${p.lang}</span>
+            ${stars}<span class="cat-tag">${p.category}</span>
+          </div>
+        </${tag}>
+      </div>`;
+    }
+
+    let tlObserver, yearObserver;
+    function observeTimeline() {
+      if (!('IntersectionObserver' in window)) {
+        timelineEl.querySelectorAll('.tl-item').forEach(el => el.classList.add('in'));
+        return;
+      }
+      if (tlObserver) tlObserver.disconnect();
+      tlObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); tlObserver.unobserve(e.target); } });
+      }, { rootMargin: '0px 0px -8% 0px' });
+      timelineEl.querySelectorAll('.tl-item').forEach(el => tlObserver.observe(el));
+
+      if (yearObserver) yearObserver.disconnect();
+      yearObserver = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            const y = e.target.dataset.year;
+            yearnavEl.querySelectorAll('.yr-pill').forEach(pl => pl.classList.toggle('active', pl.dataset.year === y));
+          }
+        });
+      }, { rootMargin: '-90px 0px -70% 0px' });
+      timelineEl.querySelectorAll('.tl-year-group').forEach(el => yearObserver.observe(el));
+    }
+
+    function renderTimeline(list) {
+      if (!list.length) { timelineEl.innerHTML = '<div class="empty">No projects match your search.</div>'; yearnavEl.innerHTML = ''; return; }
+      const sorted = [...list].sort((a, b) => (b.started || '').localeCompare(a.started || ''));
+      const groups = {};
+      sorted.forEach(p => { const y = (p.started || '????').slice(0,4); (groups[y] = groups[y] || []).push(p); });
+      const years = Object.keys(groups).sort((a, b) => b.localeCompare(a));
+
+      yearnavEl.innerHTML = years.map(y => `<div class="yr-pill" data-year="${y}">${y}</div>`).join('');
+      timelineEl.innerHTML = years.map(y => `
+        <section class="tl-year-group" id="yr-${y}" data-year="${y}">
+          <div class="tl-year">
+            <span class="yr">${y}</span>
+            <span class="yr-count">${groups[y].length} project${groups[y].length > 1 ? 's' : ''}</span>
+            <span class="yr-line"></span>
+          </div>
+          ${groups[y].map(tlItem).join('')}
+        </section>`).join('');
+
+      yearnavEl.querySelectorAll('.yr-pill').forEach(pill => {
+        pill.onclick = () => jumpToYear(pill.dataset.year);
+      });
+      positionYearnav();
+      observeTimeline();
+    }
+
+    // ── Main render ───────────────────────────────────────────────
+    let view = 'grid';
     function render() {
       const q = searchEl.value.trim().toLowerCase();
       const list = projects.filter(p => {
@@ -305,8 +486,33 @@
         return matchCat && matchQ;
       });
       countEl.textContent = `// showing ${list.length} of ${projects.length}`;
-      grid.innerHTML = list.length ? list.map(card).join('') : '<div class="empty">No projects match your search.</div>';
+      if (view === 'grid') {
+        grid.innerHTML = list.length ? list.map(card).join('') : '<div class="empty">No projects match your search.</div>';
+      } else {
+        renderTimeline(list);
+      }
     }
+
+    document.getElementById('viewToggle').addEventListener('click', (e) => {
+      const btn = e.target.closest('.vt-btn');
+      if (!btn) return;
+      view = btn.dataset.view;
+      document.querySelectorAll('.vt-btn').forEach(b => {
+        const on = b === btn;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      const tl = view === 'timeline';
+      grid.hidden = tl; timelineEl.hidden = !tl; yearnavEl.hidden = !tl;
+      render();
+      if (tl) positionYearnav();
+    });
+
+    let resizeRAF;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(resizeRAF);
+      resizeRAF = requestAnimationFrame(() => { if (view === 'timeline') positionYearnav(); });
+    });
 
     searchEl.addEventListener('input', render);
     render();

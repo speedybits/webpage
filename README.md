@@ -5,6 +5,14 @@ systems, AI & voice assistants, games, and web apps.
 
 **Live site:** https://speedybits.github.io/webpage/
 
+## Views
+
+- **Grid** — the default card grid, filterable by search box and category chips.
+- **Timeline** — a chronological spine (newest first) grouped by year, with sticky
+  year-jump pills that highlight as you scroll. Toggle between them top-right of the
+  controls bar. Each project's date span comes from the `dates` map in `index.html`
+  (`name: [started, last-active]`, sourced from GitHub `created_at` / `pushed_at`).
+
 ## Editing
 
 Everything is in `index.html`. To add, remove, or reword a project, edit the
